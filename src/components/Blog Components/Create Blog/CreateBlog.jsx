@@ -1,0 +1,34 @@
+import axios from "axios"
+import BlogEditor from "./BlogEditor"
+import { useNavigate } from "react-router-dom"
+
+export default function CreateBlog() {
+  
+  const navigate = useNavigate();
+
+  const handleBlogSubmit = async (data) => {
+  try {
+    const response = await axios.post("http://localhost:3000/api/blog/create", {
+      title:data.title,
+      content:data.content,
+      userId: localStorage.getItem("userId"),
+      token: localStorage.getItem("token")
+    })
+
+    console.log("Blog created:", response.data)
+    navigate("/my-blogs");
+  } catch (error) {
+    console.error("Failed to create blog:", error.response?.data || error.message)
+  }
+}
+
+
+  return(
+
+    <div className=" relative flex flex-col gap-10">
+        <h2 className=" text-5xl font-black">CREATE YOUR BLOG</h2>
+
+        <BlogEditor onSubmit={handleBlogSubmit} />
+    </div>
+  )
+}
