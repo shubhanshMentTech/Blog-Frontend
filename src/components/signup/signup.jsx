@@ -22,7 +22,7 @@ export function SignUpForm({
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
         const phoneNumber = document.getElementById("phoneNumber").value;
-        const response = await axios.post("http://localhost:3000/api/auth/register", {
+        const response = await axios.post("http://localhost:3000/api/v1/auth/register", {
         fullName,
         email,
         password,

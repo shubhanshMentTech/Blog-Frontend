@@ -40,6 +40,7 @@ import {
   DrawerFooter,
   DrawerClose,
 } from "@/components/ui/drawer"
+import axiosInstance from "../utils/axiosInstance.utils";
 export default function AddParticipantBox({blogId}) {
   const [open, setOpen] = useState(false)
   const isDesktop = useMediaQuery("(min-width: 768px)")
@@ -49,7 +50,10 @@ export default function AddParticipantBox({blogId}) {
     try {
         const emailInput = document.getElementById("email");
         const email = emailInput ? emailInput.value : "";
-        await axios.post('http://localhost:3000/api/blog/addParticipant', { email, blogId });
+        const response = await axiosInstance.post('http://localhost:3000/api/v1/blog/addParticipant', { email, blogId });
+        if(response.status==200){
+          setOpen(false);
+        }
         setError(null);
     } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred');

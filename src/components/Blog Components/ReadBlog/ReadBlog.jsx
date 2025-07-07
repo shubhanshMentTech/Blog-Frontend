@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import EmailFormDialog from '../AddParticipantBox'
 import AddParticipantBox from '../AddParticipantBox'
+import axiosInstance from '@/components/utils/axiosInstance.utils'
 /**
  * @typedef {Object} Blog
  * @property {{ $oid: string }} _id
@@ -32,7 +33,7 @@ export default function BlogPage() {
     useEffect(() => {
         const fetchBlog = async () => {
             try {
-                const response = await axios.post('http://localhost:3000/api/blog/getBlog', { id });
+                const response = await axiosInstance.post('http://localhost:3000/api/v1/blog/getBlog', { id });
                 setBlog(response.data);
                 localStorage.setItem('presentBlog', response.data._id.$oid);
             } catch (err) {
@@ -83,7 +84,7 @@ export default function BlogPage() {
 
     return (
         <div className="container  md:w-2xl">
-            <Card className="shadow-none rounded-none  ">
+            <Card className="shadow-none rounded-none ">
                 <CardHeader>
                     <div className="flex justify-between items-start">
                         <CardTitle className=" font-black text-xl md:text-3xl lg:text-5xl">{blog.title}</CardTitle>
@@ -104,7 +105,7 @@ export default function BlogPage() {
                         </Badge>
                     </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className=' text-wrap'>
                     <article
                         className="prose max-w-none dark:prose-invert text-xl  text-gray-500"
                         dangerouslySetInnerHTML={{ __html: blog.content }}

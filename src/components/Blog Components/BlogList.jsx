@@ -1,92 +1,88 @@
-import BlogListItem from './BlogListItem';
-
-import img1 from '../../assets/Screenshot 2025-04-17 191548.png'
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { gsap } from "gsap";
-    
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import BlogListItem from './BlogListItem'
+import { useEffect, useRef, useState } from 'react'
+import axios from 'axios'
+import axiosInstance from '../utils/axiosInstance.utils'
 
 export default function BlogList() {
-    const [blogs, setBlogs] = useState([]);
-    const [myBlogs, setMyBlogs] = useState([]);
+  const [blogs, setBlogs] = useState([])
+  const [myBlogs, setMyBlogs] = useState([])
+  const [fromCount, setFromCount] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
 
+  const loadRef = useRef(null)
 
-    const [fromCount, setFromCount] = useState(0);
-    
-    
+  const isElementInViewport = (el) => {
+    if (!el) return false
+    const rect = el.getBoundingClientRect()
+    return rect.top < window.innerHeight && rect.bottom >= 0
+  }
 
-    const fetchBlogs = async () => {
-        try {
-            if (window.location.pathname === "/") {
+  const fetchBlogs = async () => {
+    if (loading || !hasMore) return
+    setLoading(true)
+    try {
+      if (window.location.pathname === "/") {
+        const response = await axiosInstance.post("http://localhost:3000/api/v1/blog/getBlogs", {
+          from: fromCount,
+        })
 
+        const newBlogs = response.data || []
+        setBlogs((prev) => {
+          const prevIds = new Set(prev.map((b) => b._id))
+          const filtered = newBlogs.filter((b) => !prevIds.has(b._id))
+          return [...prev, ...filtered]
+        })
 
+        if (newBlogs.length < 5) setHasMore(false) // assuming 5 per fetch
+        setFromCount(blogs.length)
+      }
 
-                const response = await axios.post("http://localhost:3000/api/blog/getBlogs",{from:fromCount});
-                setBlogs(prev => {
-                    const prevIds = new Set(prev.map(b => b._id));
-                    const newBlogs = response.data.filter(b => !prevIds.has(b._id));
-                    return [...prev, ...newBlogs];
-                });
-                // console.log(blogs);
-            }
+      if (window.location.pathname === "/my-blogs") {
+        const response = await axiosInstance.post("http://localhost:3000/api/v1/blog/getMyBlogs", {
+          id: localStorage.getItem("userId"),
+        })
+        setMyBlogs(response.data)
+      }
+    } catch (error) {
+      console.error("Fetch error:", error)
+    }
+    setLoading(false)
+  }
 
-            // fetch user blogs
-            if (window.location.pathname === "/my-blogs") {
-                const response = await axios.post("http://localhost:3000/api/blog/getMyBlogs",{id: localStorage.getItem("userId")});
-                setMyBlogs(response.data);
-                console.log(response.data);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
+  // Initial load
+  useEffect(() => {
+    fetchBlogs()
+  }, [])
 
+  // Scroll listener to check visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.location.pathname !== "/") return
+      if (isElementInViewport(loadRef.current)) {
+        fetchBlogs()
+      }
+    }
 
-    useEffect(() => {
-        console.log("updated fromCount: ", fromCount);
-        fetchBlogs();
-    },[fromCount])
-
-    useEffect(() => {
-    if (window.location.pathname !== "/") return;
-
-    const trigger = ScrollTrigger.create({
-        trigger: ".loadTrigger",
-        start: "top bottom",
-        end: "bottom bottom",
-        scrub: 1,
-        markers: false,
-        onEnter: () => {
-        setFromCount((prev) => {
-            if (prev < blogs.length) {
-            return blogs.length; // only update if new blogs exist
-            }
-            return prev;
-        });
-        },
-    });
-
+    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("resize", handleScroll)
     return () => {
-        trigger.kill(); // ✅ cleanup
-    };
-    }, [blogs]);
+      window.removeEventListener("scroll", handleScroll)
+      window.removeEventListener("resize", handleScroll)
+    }
+  }, [blogs, loading, hasMore]) // re-run when blogs change
 
-
-    return (
-        <>
-            {blogs ? (
-                <div className=' max-w-[600px] flex flex-col gap-8'>
-                    {(window.location.pathname === "/" ? blogs : myBlogs).map((item, idx) => (
-                        <div key={idx} className={idx === blogs.length - 1 ? 'loadTrigger' : ''}>
-                            <BlogListItem {...item} />
-                        </div>
-                    ))}
-                </div>
-            ) :
-            <p className=' font-black text-5xl'>Loading...</p>}
-        </>
-    );
+  return (
+    <>
+      <div className="max-w-[600px] flex flex-col gap-8 mx-auto">
+        {(window.location.pathname === "/" ? blogs : myBlogs).map((item, idx) => (
+          <div key={idx} ref={idx === blogs.length - 1 ? loadRef : null}>
+            <BlogListItem {...item} />
+          </div>
+        ))}
+        {loading && <p className="text-center">Loading more...</p>}
+        {!hasMore && <p className="text-center text-gray-500">No more blogs</p>}
+      </div>
+    </>
+  )
 }

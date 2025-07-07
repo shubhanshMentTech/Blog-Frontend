@@ -1,6 +1,7 @@
 import axios from "axios"
 import BlogEditor from "./BlogEditor"
 import { useNavigate } from "react-router-dom"
+import axiosInstance from "@/components/utils/axiosInstance.utils";
 
 export default function CreateBlog() {
   
@@ -8,11 +9,10 @@ export default function CreateBlog() {
 
   const handleBlogSubmit = async (data) => {
   try {
-    const response = await axios.post("http://localhost:3000/api/blog/create", {
+    const response = await axiosInstance.post("http://localhost:3000/api/v1/blog/create", {
       title:data.title,
       content:data.content,
       userId: localStorage.getItem("userId"),
-      token: localStorage.getItem("token")
     })
 
     console.log("Blog created:", response.data)
