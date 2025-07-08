@@ -9,7 +9,7 @@ export default function CreateBlog() {
 
   const handleBlogSubmit = async (data) => {
   try {
-    const response = await axiosInstance.post("http://localhost:3000/api/v1/blog/create", {
+    const response = await axiosInstance.post("http://localhost:3000/api/v2/blog/create", {
       title:data.title,
       content:data.content,
       userId: localStorage.getItem("userId"),

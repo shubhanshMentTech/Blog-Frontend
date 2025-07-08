@@ -42,7 +42,7 @@ export default function BlogList() {
         const response = await axiosInstance.post("http://localhost:3000/api/v1/blog/getMyBlogs", {
           id: localStorage.getItem("userId"),
         })
-        setMyBlogs(response.data)
+        setMyBlogs(response.data.blogs)
       }
     } catch (error) {
       console.error("Fetch error:", error)

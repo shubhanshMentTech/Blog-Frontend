@@ -105,9 +105,9 @@ export default function BlogPage() {
                         </Badge>
                     </div>
                 </CardHeader>
-                <CardContent className=' text-wrap'>
+                <CardContent className=' '>
                     <article
-                        className="prose max-w-none dark:prose-invert text-xl  text-gray-500"
+                        className="prose text-justify overflow-x-scroll dark:prose-invert text-xl  text-gray-500"
                         dangerouslySetInnerHTML={{ __html: blog.content }}
                     />
                 </CardContent>
