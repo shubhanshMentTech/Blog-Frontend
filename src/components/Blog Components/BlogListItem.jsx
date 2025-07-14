@@ -30,7 +30,7 @@ export default function BlogListItem({ title, content, createdAt, likes, comment
             </div>
 
             {/* image */}
-            {mainImage && <img className=" object-contain rounded-xl" src={mainImage} width={200} />}
+            {mainImage && <img className=" max-w-2/5 w-fit h-full border self-center object-cover rounded-lg" src={mainImage} />}
 
         </div>
     );

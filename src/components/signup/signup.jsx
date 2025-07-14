@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label"
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa"
 import { useState } from "react"
 import axios from "axios";
+import { useNavigate } from "react-router-dom"
 
 
 export function SignUpForm({
@@ -13,7 +14,7 @@ export function SignUpForm({
 }) {
 
     const [message, setMessage] = useState("");
-
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,8 +29,10 @@ export function SignUpForm({
         password,
         phoneNumber,
       });
+      localStorage.setItem("token", response.data.accessToken);
+        localStorage.setItem("userId", response.data.userId);
       setMessage(response.data.message);
-      Navigate("/")
+      navigate("/")
     } catch (error) {
       console.error("Registration failed:", error.response.data.error);
       setMessage(error.response.data.error);

@@ -11,7 +11,7 @@ const navItems = [
 
 export default function Sidebar() {
   return (
-    <aside className="fixed top-0 left-0 h-screen w-64 bg-gray-100 p-4 shadow-md z-50">
+    <aside className="fixed hidden md:block top-0 left-0 h-screen w-64 bg-gray-100 p-4 shadow-md z-50">
       <h2 className="text-2xl font-bold mb-6">Blogs</h2>
       <nav className="flex flex-col gap-2">
         {navItems.map(({ label, icon: Icon, path }) => (

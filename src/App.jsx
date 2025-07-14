@@ -10,27 +10,25 @@ import Layout from "./components/Layout";
 import CreateBlog from "./components/Blog Components/Create Blog/CreateBlog";
 import BlogPage from "./components/Blog Components/ReadBlog/ReadBlog";
 import MyBlogs from "./components/Blog Components/My blogs/MyBlog";
+import ProtectedRoute from "./components/ProtectedRoutes";
 
 function App() {
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center">
-      <AuthProvider>
+    <div className="flex min-h-dvh flex-col items-center justify-center">
         <Router>
           <Routes>
             <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<SignUpForm />} />
             <Route path="/" element={  <Layout>  <Home />  </Layout> } />
 
-            {/* Sidebar Layout for all others */}
-            <Route path="/my-blogs" element={<Layout><MyBlogs /></Layout>} />
-            <Route path="/create" element={<Layout><CreateBlog /></Layout>} />
-            <Route path="/profile" element={<Layout><div>Profile Page</div></Layout>} />
-            <Route path="/settings" element={<Layout><div>Settings Page</div></Layout>} />
-            <Route path="/blog/:id" element={<Layout><BlogPage /></Layout>} />
+            {/* Protected Routes */}
+              <Route path="/my-blogs" element={<ProtectedRoute><Layout><MyBlogs /></Layout></ProtectedRoute>} />
+              <Route path="/create" element={<ProtectedRoute><Layout><CreateBlog /></Layout></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><Layout><div>Profile Page</div></Layout></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><Layout><div>Settings Page</div></Layout></ProtectedRoute>} />
+              <Route path="/blog/:id" element={<ProtectedRoute><Layout><BlogPage /></Layout></ProtectedRoute>} />
           </Routes>
         </Router>
-        {/* </SidebarProvider> */}
-      </AuthProvider>
     </div>
   );
 }
