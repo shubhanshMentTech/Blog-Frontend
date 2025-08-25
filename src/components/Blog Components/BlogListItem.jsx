@@ -1,11 +1,11 @@
 import { BookHeart, CalendarDays, MessagesSquare } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 export default function BlogListItem({ title, content, createdAt, likes, comments, mainImage, _id }) {
 
-    const navigate = useNavigate();
+    const router = useRouter();
     const handleOpen= () =>{
-        navigate(`/blog/${_id}`);
+        router.push(`/blog/${_id}`);
         localStorage.setItem("presentBlog", _id);
         console.log("presentBlog set:- ", _id);
     }

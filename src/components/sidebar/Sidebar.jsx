@@ -1,4 +1,6 @@
-import { NavLink } from "react-router-dom"
+"use client";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Home, User, Settings, FilePlus2, BookOpenText, BookUser } from "lucide-react"
 
 const navItems = [
@@ -10,24 +12,26 @@ const navItems = [
 ]
 
 export default function Sidebar() {
+  const pathname = usePathname();
   return (
     <aside className="fixed hidden md:block top-0 left-0 h-screen w-64 bg-gray-100 p-4 shadow-md z-50">
       <h2 className="text-2xl font-bold mb-6">Blogs</h2>
       <nav className="flex flex-col gap-2">
-        {navItems.map(({ label, icon: Icon, path }) => (
-          <NavLink
-            key={path}
-            to={path}
-            className={({ isActive }) =>
-              `flex items-center gap-3 p-2 rounded-md hover:bg-gray-200 ${
+        {navItems.map(({ label, icon: Icon, path }) => {
+          const isActive = pathname === path;
+          return (
+            <Link
+              key={path}
+              href={path}
+              className={`flex items-center gap-3 p-2 rounded-md hover:bg-gray-200 ${
                 isActive ? "bg-gray-300 font-semibold text-primary" : ""
-              }`
-            }
-          >
-            <Icon size={20} />
-            {label}
-          </NavLink>
-        ))}
+              }`}
+            >
+              <Icon size={20} />
+              {label}
+            </Link>
+          );
+        })}
       </nav>
     </aside>
   )

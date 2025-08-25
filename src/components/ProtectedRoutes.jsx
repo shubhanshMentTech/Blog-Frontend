@@ -1,14 +1,19 @@
 // components/ProtectedRoute.jsx
-import { useContext } from "react";
-import { Navigate } from "react-router-dom";
+"use client";
+import { useContext, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { AuthContext } from "./utils/authContext"; // ✅ check this path
 
 export default function ProtectedRoute({ children }) {
   const { token, loading } = useContext(AuthContext);
+  const router = useRouter();
 
-  if (loading) return <div>Loading...</div>;
+  useEffect(() => {
+    if (!loading && !token) {
+      router.replace("/login");
+    }
+  }, [loading, token, router]);
 
-  if (!token) return <Navigate to="/login" replace />;
-
+  if (loading || !token) return <div>Loading...</div>;
   return children;
 }

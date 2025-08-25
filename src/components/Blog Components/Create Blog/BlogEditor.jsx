@@ -1,7 +1,7 @@
 import axios from "axios"
 import React, { useState, useRef, useMemo } from "react"
-import ReactQuill from "react-quill"
-import "react-quill/dist/quill.snow.css"
+import dynamic from "next/dynamic"
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false })
 
 export default function BlogEditor({ onSubmit }) {
   const [title, setTitle] = useState("")

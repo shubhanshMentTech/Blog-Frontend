@@ -1,11 +1,11 @@
 import axios from "axios"
 import BlogEditor from "./BlogEditor"
-import { useNavigate } from "react-router-dom"
+import { useRouter } from "next/navigation"
 import axiosInstance from "@/components/utils/axiosInstance.utils";
 
 export default function CreateBlog() {
   
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleBlogSubmit = async (data) => {
   try {
@@ -15,7 +15,7 @@ export default function CreateBlog() {
     })
 
     console.log("Blog created:", response.data)
-    navigate("/my-blogs");
+    router.push("/my-blogs");
   } catch (error) {
     console.error("Failed to create blog:", error.response?.data || error.message)
   }

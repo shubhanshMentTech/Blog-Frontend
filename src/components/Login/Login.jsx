@@ -7,7 +7,7 @@ import { useState } from "react"
 import axios from "axios"
 import { AuthContext } from "../utils/authContext";
 import { useContext } from "react"
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 export function LoginForm({
   className,
@@ -16,7 +16,7 @@ export function LoginForm({
 
     const [errorMessage, setErrorMessage] = useState(null); // New state for handling error messages
     const { setToken } = useContext(AuthContext);
-    const navigate = useNavigate();
+    const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -33,7 +33,7 @@ export function LoginForm({
             localStorage.setItem("userId", response.data.userId);
             console.log("login token: ", response.data.accessToken)
             console.log("login userId: ", response.data.userId)
-            navigate("/");
+            router.push("/");
         } catch (error) {
             console.error("Authentication failed:", error);
             setToken(null);
